@@ -1,0 +1,21 @@
+{
+    "name": "vz777.PolySpatials",
+    "rootNamespace": "vz777.PolySpatials",
+    "references": [
+        "Unity.InputSystem",
+        "Unity.Mathematics",
+        "VContainer",
+        "vz777.Events",
+        "vz777.Foundation",
+        "vz777.VContainer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
