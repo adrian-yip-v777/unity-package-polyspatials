@@ -14,9 +14,9 @@ namespace vz777.PolySpatials.Manipulations.Strategies
     public class MoveAndRotateStrategy : ManipulationStrategy
     {
         private EventBus _eventBus;
-        private Quaternion _rotationOffset;
-        private Vector3 _positionOffset;
+        private Quaternion _localRotationOffset;
         private ISpatialSelectable _selectable;
+        private Vector3 _currentPosition;
 
         [Inject]
         private void Construct(EventBus eventBus)
@@ -39,11 +39,10 @@ namespace vz777.PolySpatials.Manipulations.Strategies
                 _selectable = selectable;
                 _eventBus.Publish(new MoveAndRotateStartEvent(_selectable, manipulationMode));
                 
-                // Calculate the offset.
-                var interactionPosition = primaryPointer.interactionPosition;
-                var inverseDeviceRotation = Quaternion.Inverse(primaryPointer.inputDeviceRotation);
-                _rotationOffset = inverseDeviceRotation * selectable.ManipulationTarget.Rotation;
-                _positionOffset = inverseDeviceRotation * (selectable.ManipulationTarget.Position - interactionPosition);
+                // Calculate the offset from the pinch to the object.
+                var inverseRotation = Quaternion.Inverse(primaryPointer.inputDeviceRotation);
+                _currentPosition = _selectable.ManipulationTarget.Position;
+                _localRotationOffset = inverseRotation * selectable.ManipulationTarget.Rotation;
             }
             
             switch (primaryPointer.phase)
@@ -55,9 +54,10 @@ namespace vz777.PolySpatials.Manipulations.Strategies
                 case SpatialPointerPhase.Moved:
                     // Position the piece at the interaction position, maintaining the same relative transform from interaction position to selection pivot
                     var deviceRotation = primaryPointer.inputDeviceRotation;
-                    var position = primaryPointer.interactionPosition + deviceRotation * _positionOffset;
-                    var rotation = deviceRotation * _rotationOffset;
-                    _eventBus.Publish(new MoveAndRotateUpdateEvent(_selectable, position, rotation));
+                    var moveDelta = primaryPointer.deltaInteractionPosition;
+                    _currentPosition += moveDelta;
+                    var worldRotation = deviceRotation * _localRotationOffset;
+                    _eventBus.Publish(new MoveAndRotateUpdateEvent(_selectable, _currentPosition, worldRotation));
                     return true;
                 
                 case SpatialPointerPhase.None:
@@ -74,8 +74,7 @@ namespace vz777.PolySpatials.Manipulations.Strategies
         public override void Reset()
         {
             _selectable = null; 
-            _rotationOffset = default;
-            _positionOffset = default;
+            _localRotationOffset = default;
         }
     }
 }
