@@ -1,4 +1,5 @@
 using System.Linq;
+using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 using VContainer.Unity;
 using vz777.Events;
@@ -14,12 +15,13 @@ namespace vz777.PolySpatials.Manipulations
     public class ManipulationHandler : DisposableBase, IStartable
     {
         private readonly EventBus _eventBus;
-        private readonly ManipulationStrategy[] _strategies;
+        private readonly ManipulationStrategy.Factory _factory;
+        private ManipulationStrategy[] _strategies;
 
-        public ManipulationHandler(ManipulationStrategy[] strategies, ManipulationStrategy.Factory factory, EventBus eventBus)
+        public ManipulationHandler(ManipulationStrategy.Factory factory, EventBus eventBus)
         {
             _eventBus = eventBus;
-            _strategies = strategies.Select(factory.Create).ToArray();
+            _factory = factory;
         }
         
         public void Start()
@@ -32,8 +34,30 @@ namespace vz777.PolySpatials.Manipulations
             _eventBus.Unsubscribe<SpatialPointerDetectEvent>(OnSpatialPointerDetected);
         }
 
+        /// <summary>
+        /// Apply a context for different combo of manipulation strategies.
+        /// </summary>
+        public void ApplyContext(ManipulationContext context)
+        {
+            _strategies = context.Strategies.Select(_factory.Create).ToArray();
+        }
+
+        public void ClearContext()
+        {
+            if (_strategies == null) return;
+            
+            // Destroy the instance of strategies to prevent memory leak.
+            foreach (var strategy in _strategies)
+                Object.Destroy(strategy);
+
+            _strategies = null;
+        }
+        
         private void OnSpatialPointerDetected(SpatialPointerDetectEvent eventData)
         {
+            if (_strategies == null || _strategies.Length == 0)
+                return;
+            
             var spatialPointers = eventData.SpatialPointers.ToArray();
             
             // Reset all strategies if there is no valid selection

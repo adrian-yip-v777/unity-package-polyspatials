@@ -6,7 +6,7 @@ using vz777.PolySpatials.Manipulations.Events;
 
 namespace vz777.PolySpatials.Manipulations.Strategies
 {
-    [CreateAssetMenu(menuName = "vz777/Spatial/Manipulate Strategies/Scaling + Rotation", fileName = "Spatial Scaling and Rotation")]
+    [CreateAssetMenu(menuName = "vz777/Poly Spatials/Manipulations/Strategies/Scaling + Rotation", fileName = "Spatial Scaling and Rotation")]
     public class ScaleAndRotateStrategy : ManipulationStrategy
     {
         public float SmallestScaleValue = 0.1f;
