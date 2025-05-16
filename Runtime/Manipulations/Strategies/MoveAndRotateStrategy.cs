@@ -10,7 +10,7 @@ namespace vz777.PolySpatials.Manipulations.Strategies
     /// <summary>
     /// Move and rotate the target with your wrist.
     /// </summary>
-    [CreateAssetMenu(menuName = "vz777/Spatial/Manipulate Strategies/Movement + Rotation", fileName = "Spatial Movement and Rotation")]
+    [CreateAssetMenu(menuName = "vz777/Poly Spatials/Manipulations/Strategies/Movement + Rotation", fileName = "Spatial Movement and Rotation")]
     public class MoveAndRotateStrategy : ManipulationStrategy
     {
         private EventBus _eventBus;
