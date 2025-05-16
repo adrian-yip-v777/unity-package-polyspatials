@@ -16,7 +16,8 @@ namespace vz777.PolySpatials.Manipulations.Events
         }
 
         public ISpatialSelectable Selectable { get; }
-        public Vector3 DesiredPosition { get; }
-        public Quaternion DesiredRotation { get; }
+        public Vector3? DesiredPosition { get; }
+        public Quaternion? DesiredRotation { get; }
+        public Vector3? DesiredLocalScale => null;
     }
 }

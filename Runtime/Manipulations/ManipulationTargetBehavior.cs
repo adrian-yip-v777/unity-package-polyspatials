@@ -82,58 +82,30 @@ namespace vz777.PolySpatials.Manipulations
         
         protected virtual void OnManipulationStarted(IManipulationStartEvent eventData)
         {
+            // Quit if the target is not this one.
+            if (eventData.Selectable.ManipulationTarget is not ManipulationTargetBehavior behavior || behavior != this) 
+                return;
+            
             // There is chances that the lerp is still going on before the manipulation started again.
             // Therefore we need to stop the lerp here.
             desiredPosition = TransformCache.position; 
             desiredRotation = TransformCache.rotation;
             DesiredLocalScale = TransformCache.localScale;
             
-            switch (eventData)
-            {
-                // Move and rotate is only against the watch components.
-                // So let them move and rotate on their own.
-                case MoveAndRotateStartEvent:
-                    if (eventData.Selectable.ManipulationTarget == this)
-                        EventBus.Subscribe<MoveAndRotateUpdateEvent>(OnMoveAndRotateUpdated);
-                    
-                    // Stop the master watch from moving.
-                    var isMasterWatch = GetComponent<ISpatialSelectable>() == null;
-                    if (!isMasterWatch) break;
-                    
-                    StopMoving();
-                    break;
-
-                // Station all watch's components since the master watch is moving.
-                case ScaleAndRotateStartEvent:
-                    // Station all watch components. 
-                    if (eventData.Selectable.ManipulationTarget == this)
-                    {
-                        EventBus.Subscribe<ScaleAndRotateUpdateEvent>(OnScaleAndRotationUpdated);
-                        break;
-                    }
-                    
-                    StopMoving();
-                    break;
-            }
+            EventBus.Subscribe<IManipulationUpdateEvent>(OnManipulationUpdated);
+            StopMoving();
         }
 
         protected virtual void OnManipulationEnded(IManipulationEndEvent @event)
         {
-            EventBus.Unsubscribe<MoveAndRotateUpdateEvent>(OnMoveAndRotateUpdated);
-            EventBus.Unsubscribe<ScaleAndRotateUpdateEvent>(OnScaleAndRotationUpdated);
+            EventBus.Unsubscribe<IManipulationUpdateEvent>(OnManipulationUpdated);
             StopMoving();
         }
 
-        protected virtual void OnMoveAndRotateUpdated(MoveAndRotateUpdateEvent eventData)
+        protected virtual void OnManipulationUpdated(IManipulationUpdateEvent eventData)
         {
             desiredPosition = eventData.DesiredPosition;
             desiredRotation = eventData.DesiredRotation;
-            lerpCoroutine ??= StartCoroutine(Lerp());
-        }
-        
-        protected virtual void OnScaleAndRotationUpdated(ScaleAndRotateUpdateEvent eventData)
-        {
-            desiredRotation = eventData.RotationDelta * desiredRotation;
             DesiredLocalScale = eventData.DesiredLocalScale;
             lerpCoroutine ??= StartCoroutine(Lerp());
         }
