@@ -20,7 +20,7 @@ namespace vz777.PolySpatials.Manipulations.Events
         public ISpatialSelectable Selectable { get; }
         public Vector3? DesiredPosition => null;
         public Quaternion? DesiredRotation => null;
-        public Quaternion RotationDelta { get; }
+        public Quaternion? RotationDelta { get; }
         public Vector3? DesiredLocalScale { get; }
         public SpatialPointerState PrimaryPointer { get; }
         public SpatialPointerState SecondaryPointer { get; }
