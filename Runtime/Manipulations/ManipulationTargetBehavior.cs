@@ -82,10 +82,23 @@ namespace vz777.PolySpatials.Manipulations
         
         protected virtual void OnManipulationStarted(IManipulationStartEvent eventData)
         {
-            // Quit if the target is not this one.
-            if (eventData.Selectable.ManipulationTarget is not ManipulationTargetBehavior behavior || behavior != this) 
-                return;
+            var selectable = eventData.Selectable;
             
+            // Quit if the target is not this one.
+            switch (eventData.ManipulationMode)
+            {
+                case ManipulationMode.Self:
+                    var localSelectable = GetComponent<ISpatialSelectable>();
+                    if (localSelectable == null || selectable != localSelectable)
+                        return;
+                    break;
+                
+                case ManipulationMode.Master:
+                    if (selectable.ManipulationTarget is not ManipulationTargetBehavior behavior || behavior != this)
+                        return;
+                    break;
+            }
+
             // There is chances that the lerp is still going on before the manipulation started again.
             // Therefore we need to stop the lerp here.
             desiredPosition = TransformCache.position; 
@@ -105,7 +118,12 @@ namespace vz777.PolySpatials.Manipulations
         protected virtual void OnManipulationUpdated(IManipulationUpdateEvent eventData)
         {
             desiredPosition = eventData.DesiredPosition;
-            desiredRotation = eventData.DesiredRotation;
+
+            if (eventData.RotationDelta.HasValue)
+                desiredRotation = eventData.RotationDelta * desiredRotation;
+            else
+                desiredRotation = eventData.DesiredRotation;
+            
             DesiredLocalScale = eventData.DesiredLocalScale;
             lerpCoroutine ??= StartCoroutine(Lerp());
         }

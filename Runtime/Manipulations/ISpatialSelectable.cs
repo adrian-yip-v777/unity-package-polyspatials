@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace vz777.PolySpatials.Manipulations
 {
     /// <summary>
@@ -14,5 +16,10 @@ namespace vz777.PolySpatials.Manipulations
         /// The transform to manipulate with after ray-casting.
         /// </summary>
         public IManipulateTarget ManipulationTarget { get; }
+        
+        /// <summary>
+        /// The manipulation mode of this selectable.
+        /// </summary>
+        public ManipulationMode Mode { get; }
     }
 }

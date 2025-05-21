@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.2
+- Fixed the mode not accountable for the manipulation checking
+- Fixed delta rotation not taken account for the scaling and rotation strategy
+
 ## 0.2.1
 - Fixed spatial button being triggered for multiple times by a pinch
 
