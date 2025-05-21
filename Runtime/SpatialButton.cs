@@ -80,7 +80,11 @@ namespace vz777.PolySpatials
             
             foreach (var pointer in eventData.SpatialPointers)
             {
-                if (pointer.targetObject != gameObject) continue;
+                // Only works with ended phase pointer
+                // to prevent multiple triggers on this button.
+                if (pointer.phase is not SpatialPointerPhase.Ended || 
+                    pointer.targetObject != gameObject) continue;
+                
                 OnClicked(pointer);
                 break;
             }
