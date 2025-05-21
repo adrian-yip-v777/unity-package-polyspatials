@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.1
+- Fixed spatial button being triggered for multiple times by a pinch
+
 ## 0.2.0
 - Add a context for applying different stratgies on different stages of your application.
 - Updated the asset path of the strategies.
