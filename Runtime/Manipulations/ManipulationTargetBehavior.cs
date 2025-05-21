@@ -118,7 +118,12 @@ namespace vz777.PolySpatials.Manipulations
         protected virtual void OnManipulationUpdated(IManipulationUpdateEvent eventData)
         {
             desiredPosition = eventData.DesiredPosition;
-            desiredRotation = eventData.DesiredRotation;
+
+            if (eventData.RotationDelta.HasValue)
+                desiredRotation = eventData.RotationDelta * desiredRotation;
+            else
+                desiredRotation = eventData.DesiredRotation;
+            
             DesiredLocalScale = eventData.DesiredLocalScale;
             lerpCoroutine ??= StartCoroutine(Lerp());
         }
