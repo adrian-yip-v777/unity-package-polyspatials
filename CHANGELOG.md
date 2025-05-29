@@ -1,4 +1,7 @@
 # Changelog
+## 0.3.0
+- Exposed the children list of the manipulation group
+
 ## 0.2.2
 - Fixed the mode not accountable for the manipulation checking
 - Fixed delta rotation not taken account for the scaling and rotation strategy
