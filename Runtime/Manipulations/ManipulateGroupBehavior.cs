@@ -10,6 +10,8 @@ namespace vz777.PolySpatials.Manipulations
         [SerializeField]
         private List<Transform> children = new();
         
+        public IReadOnlyCollection<Transform> Children => children;
+        
         private void OnValidate()
         {
             if (children == null || children.Count == 0) return;
