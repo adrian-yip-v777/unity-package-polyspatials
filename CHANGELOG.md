@@ -1,4 +1,8 @@
 # Changelog
+## 0.4.0
+- Use TRS data for transform data.
+- Supported rollback of manipulation groups while selecting other groups.
+
 ## 0.3.0
 - Exposed the children list of the manipulation group
 
