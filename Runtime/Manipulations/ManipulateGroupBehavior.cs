@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using vz777.Foundations;
 using vz777.PolySpatials.Manipulations.Events;
 
 namespace vz777.PolySpatials.Manipulations
@@ -9,9 +10,21 @@ namespace vz777.PolySpatials.Manipulations
     {
         [SerializeField]
         private List<Transform> children = new();
-        
         public IReadOnlyCollection<Transform> Children => children;
-        
+        public bool IsManipulating;
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            LerpEnd += OnLerpEnded;
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            LerpEnd += OnLerpEnded;
+        }
+
         private void OnValidate()
         {
             if (children == null || children.Count == 0) return;
@@ -29,6 +42,18 @@ namespace vz777.PolySpatials.Manipulations
             }
         }
 
+        public void MoveInLerp(TrsData trsData)
+        {
+            DesiredTransform = trsData;
+
+            children.ForEach(child =>
+            {
+                child.SetParent(TransformCache);
+            });
+
+            LerpCoroutine ??= StartCoroutine(Lerp());
+        }
+
         protected override void OnManipulationStarted(IManipulationStartEvent eventData)
         {
             base.OnManipulationStarted(eventData);
@@ -40,14 +65,23 @@ namespace vz777.PolySpatials.Manipulations
             {
                 child.SetParent(TransformCache);
             });
+
+            IsManipulating = true;
         }
 
-        protected override void OnManipulationEnded(IManipulationEndEvent eventData)
+        protected override void OnManipulationEnded(IManipulationEndEvent @event)
         {
-            base.OnManipulationEnded(eventData);
+            base.OnManipulationEnded(@event);
             
-            if (eventData.Selectable.ManipulationTarget is not ManipulateGroupBehavior behavior || behavior != this)
+            if (@event.Selectable.ManipulationTarget is not ManipulateGroupBehavior behavior || behavior != this)
                 return;
+            
+            IsManipulating = false;
+        }
+
+        private void OnLerpEnded()
+        {
+            if (IsManipulating) return;
             
             children.ForEach(child =>
             {

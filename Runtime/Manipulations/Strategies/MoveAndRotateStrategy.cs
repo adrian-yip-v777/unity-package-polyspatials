@@ -41,8 +41,8 @@ namespace vz777.PolySpatials.Manipulations.Strategies
                 
                 // Calculate the offset from the pinch to the object.
                 var inverseRotation = Quaternion.Inverse(primaryPointer.inputDeviceRotation);
-                _currentPosition = _selectable.ManipulationTarget.Position;
-                _localRotationOffset = inverseRotation * selectable.ManipulationTarget.Rotation;
+                _currentPosition = _selectable.ManipulationTarget.Transform.position;
+                _localRotationOffset = inverseRotation * selectable.ManipulationTarget.Transform.rotation;
             }
             
             switch (primaryPointer.phase)
