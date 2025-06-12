@@ -1,7 +1,9 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using VContainer;
 using vz777.Events;
+using vz777.Foundations;
 using vz777.PolySpatials.Manipulations.Events;
 
 namespace vz777.PolySpatials.Manipulations
@@ -12,21 +14,18 @@ namespace vz777.PolySpatials.Manipulations
     public class ManipulationTargetBehavior : MonoBehaviour, IManipulateTarget
     {
         public float Smoothness = 5f;
-        protected Coroutine lerpCoroutine;
-        protected Vector3? desiredPosition;
-        protected Quaternion? desiredRotation;
+        protected Coroutine LerpCoroutine;
+        protected event UnityAction LerpEnd;
         
-        public Vector3 Position => TransformCache.position;
-        public Quaternion Rotation => TransformCache.rotation;
-        public Vector3 LocalScale => TransformCache.localScale;
-        public Vector3? DesiredLocalScale { get; protected set; }
+        public GameObject GameObject => gameObject;
+        public Transform Transform => TransformCache;
+        public TrsData? DesiredTransform { get; set; }
         public Vector3 InitialScale { get; private set; }
 
         /// <summary>
         /// The display name of this selectable.
         /// </summary>
         public string Name => name;
-        
         protected EventBus EventBus { get; private set; }
         protected Transform TransformCache { get; private set; }
 
@@ -39,45 +38,48 @@ namespace vz777.PolySpatials.Manipulations
         protected virtual void Awake()
         {
             TransformCache = transform;
-            desiredPosition = TransformCache.position;
-            desiredRotation = TransformCache.rotation;
-            DesiredLocalScale = InitialScale = TransformCache.localScale;
+            DesiredTransform = new TrsData(TransformCache);
+            InitialScale = TransformCache.localScale;
         }
 
         protected virtual void OnEnable()
         {
             EventBus.Subscribe<IManipulationStartEvent>(OnManipulationStarted);
             EventBus.Subscribe<IManipulationEndEvent>(OnManipulationEnded);
-            EventBus.Subscribe<IManipulationStopLerpingEvent>(OnLerpingStopped);
+            EventBus.Subscribe<IManipulationStopLerpingEvent>(OnLerpStopped);
         }
 
         protected virtual void OnDisable()
         {
             EventBus.Unsubscribe<IManipulationStartEvent>(OnManipulationStarted);
             EventBus.Unsubscribe<IManipulationEndEvent>(OnManipulationEnded);
-            EventBus.Unsubscribe<IManipulationStopLerpingEvent>(OnLerpingStopped);
+            EventBus.Unsubscribe<IManipulationStopLerpingEvent>(OnLerpStopped);
         }
 
         protected virtual IEnumerator Lerp()
         {
+            var distanceCheck = 0f;
+            var rotationCheck = 0f;
+            var scaleCheck = 0f;
             do
             {
-                if (desiredPosition != null)
-                    TransformCache.position = Vector3.Lerp(TransformCache.position, desiredPosition.Value, Time.deltaTime * Smoothness);
-                
-                if (desiredRotation != null)
-                    TransformCache.rotation = Quaternion.Lerp(TransformCache.rotation, desiredRotation.Value,Time.deltaTime * Smoothness);
-                
-                if (DesiredLocalScale != null)
-                    TransformCache.localScale = Vector3.Lerp(TransformCache.localScale, DesiredLocalScale.Value, Time.deltaTime * Smoothness);
+                if (DesiredTransform == null) continue;
+                TransformCache.position = Vector3.Lerp(TransformCache.position, DesiredTransform.Value.Position, Time.deltaTime * Smoothness);
+                TransformCache.rotation = Quaternion.Lerp(TransformCache.rotation, DesiredTransform.Value.Rotation,Time.deltaTime * Smoothness);
+                TransformCache.localScale = Vector3.Lerp(TransformCache.localScale, DesiredTransform.Value.LocalScale, Time.deltaTime * Smoothness);
 
+                distanceCheck = Vector3.Distance(TransformCache.position, DesiredTransform.Value.Position);
+                rotationCheck = Mathf.Abs(Quaternion.Dot(TransformCache.rotation, DesiredTransform.Value.Rotation));
+                scaleCheck = Vector3.Distance(DesiredTransform.Value.LocalScale, TransformCache.localScale); 
+                
                 yield return null;
             } while (
-                (desiredPosition != null && Vector3.Distance(TransformCache.position, desiredPosition.Value) > 0.01f) ||
-                (desiredRotation != null && Quaternion.Angle(TransformCache.rotation, desiredRotation.Value) > 0.01f) ||
-                (DesiredLocalScale != null && (DesiredLocalScale.Value - TransformCache.localScale).sqrMagnitude > 0.01f));
+                DesiredTransform != null && (distanceCheck > .1f || 
+                                             !Mathf.Approximately(rotationCheck, 1) || 
+                                             scaleCheck > .1f ));
 
-            lerpCoroutine = null;
+            LerpCoroutine = null;
+            LerpEnd?.Invoke();
         }
         
         protected virtual void OnManipulationStarted(IManipulationStartEvent eventData)
@@ -101,42 +103,45 @@ namespace vz777.PolySpatials.Manipulations
 
             // There is chances that the lerp is still going on before the manipulation started again.
             // Therefore we need to stop the lerp here.
-            desiredPosition = TransformCache.position; 
-            desiredRotation = TransformCache.rotation;
-            DesiredLocalScale = TransformCache.localScale;
-            
+            DesiredTransform = new TrsData(TransformCache);
             EventBus.Subscribe<IManipulationUpdateEvent>(OnManipulationUpdated);
             StopMoving();
         }
 
         protected virtual void OnManipulationEnded(IManipulationEndEvent @event)
         {
+            if (@event.Selectable.ManipulationTarget is not ManipulationTargetBehavior behavior || behavior != this)
+                return;
+            
             EventBus.Unsubscribe<IManipulationUpdateEvent>(OnManipulationUpdated);
-            StopMoving();
         }
 
         protected virtual void OnManipulationUpdated(IManipulationUpdateEvent eventData)
         {
-            desiredPosition = eventData.DesiredPosition;
-
-            if (eventData.RotationDelta.HasValue)
-                desiredRotation = eventData.RotationDelta * desiredRotation;
-            else
-                desiredRotation = eventData.DesiredRotation;
+            var desiredPosition = eventData.DesiredPosition ?? (DesiredTransform?.Position ?? TransformCache.position);
+            var desiredRotation = DesiredTransform?.Rotation ?? TransformCache.rotation;
             
-            DesiredLocalScale = eventData.DesiredLocalScale;
-            lerpCoroutine ??= StartCoroutine(Lerp());
+            if (eventData.RotationDelta.HasValue)
+                desiredRotation = eventData.RotationDelta.Value * desiredRotation;
+            else
+                desiredRotation = eventData.DesiredRotation ?? TransformCache.rotation;
+            
+            var desiredLocalScale = eventData.DesiredLocalScale ?? (DesiredTransform?.LocalScale ?? TransformCache.localScale);
+            
+            DesiredTransform = new TrsData(desiredPosition, desiredRotation, desiredLocalScale);
+            LerpCoroutine ??= StartCoroutine(Lerp());
         }
 
         protected virtual void StopMoving()
         {
-            if (lerpCoroutine != null)
-                StopCoroutine(lerpCoroutine);
+            if (LerpCoroutine != null)
+                StopCoroutine(LerpCoroutine);
 
-            lerpCoroutine = null;
+            LerpCoroutine = null;
+            DesiredTransform = new TrsData(TransformCache);
         }
 
-        private void OnLerpingStopped(IManipulationStopLerpingEvent eventData)
+        private void OnLerpStopped(IManipulationStopLerpingEvent eventData)
         {
             StopMoving();
         }

@@ -49,7 +49,7 @@ namespace vz777.PolySpatials.Manipulations.Strategies
                 _eventBus.Publish(new ScaleAndRotateStartEvent (_selectedObject, manipulationMode));
                 
                 _initialHandsDistance = handsDistance;
-                _startScale = _selectedObject.ManipulationTarget.LocalScale;
+                _startScale = _selectedObject.ManipulationTarget.Transform.localScale;
                 _previousPinchVector = secondaryPointer.inputDevicePosition - primaryPointer.inputDevicePosition;
                 
                 return true;

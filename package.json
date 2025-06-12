@@ -1,15 +1,15 @@
 {
   "name": "com.vz777.polyspatials",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "displayName": "Visionaries PolySpatials",
   "description": "This is a simple package for spatial interactions with Vision Pro.",
   "unity": "2019.1",
   "documentationUrl": "https://github.com/adrian-yip-v777/unity-package-polyspatials",
-  "changelogUrl": "https://github.com/adrian-yip-v777/unity-package-polyspatials/blob/0.3.0/CHANGELOG.md",
-  "licensesUrl": "https://github.com/adrian-yip-v777/unity-package-polyspatials/blob/0.3.0/LICENSE",
+  "changelogUrl": "https://github.com/adrian-yip-v777/unity-package-polyspatials/blob/0.4.0/CHANGELOG.md",
+  "licensesUrl": "https://github.com/adrian-yip-v777/unity-package-polyspatials/blob/0.4.0/LICENSE",
   "dependencies": {
     "jp.hadashikick.vcontainer": "1.16.8",
-    "com.vz777.foundation": "0.1.0",
+    "com.vz777.foundation": "0.2.2-fork.5",
     "com.vz777.events": "0.3.2"
   },
   "keywords": [
