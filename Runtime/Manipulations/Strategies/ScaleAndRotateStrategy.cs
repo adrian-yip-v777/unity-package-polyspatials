@@ -41,6 +41,11 @@ namespace vz777.PolySpatials.Manipulations.Strategies
             
             var handsDistance = Vector3.Distance(primaryPointer.inputDevicePosition, secondaryPointer.inputDevicePosition);
             
+            // There are great chances that primary and secondary pointers are too close at first couples of frames
+            // We have to ignore it, otherwise the scaling gesture won't be calculated correctly.
+            if (handsDistance < 0.01f)
+                return true;
+            
             // Initialize for first touch.
             if (_selectedObject == null)
             {

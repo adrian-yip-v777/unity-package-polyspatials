@@ -1,4 +1,7 @@
 # Changelog
+## 0.4.1
+- Fixed scaling with two pinches being incorrectly calculated because the wrong initial distance
+
 ## 0.4.0
 - Use TRS data for transform data.
 - Supported rollback of manipulation groups while selecting other groups.
