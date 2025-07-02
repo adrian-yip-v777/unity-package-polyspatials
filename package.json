@@ -8,9 +8,11 @@
   "changelogUrl": "https://github.com/adrian-yip-v777/unity-package-polyspatials/blob/0.4.1/CHANGELOG.md",
   "licensesUrl": "https://github.com/adrian-yip-v777/unity-package-polyspatials/blob/0.4.1/LICENSE",
   "dependencies": {
+    "com.unity.inputsystem": "1.13.1",
     "jp.hadashikick.vcontainer": "1.16.8",
-    "com.vz777.foundation": "0.2.2-fork.5",
-    "com.vz777.events": "0.3.2"
+    "com.vz777.foundation": "0.3.0",
+    "com.vz777.events": "0.3.2",
+    "com.vz777.vcontainer-extensions": "0.2.1"
   },
   "keywords": [
     "vision",
@@ -22,5 +24,12 @@
     "name": "Visionaries 777",
     "email": "adrian@visionaries777.com",
     "url": "https://www.vz777.com"
-  }
+  },
+  "samples": [
+    {
+      "displayName": "Spatial Buttons",
+      "description": "Some common scripts for Spatial Buttons (A 3D mesh button)",
+      "path": "Samples~/SpatialButtons"
+    }
+  ]
 }

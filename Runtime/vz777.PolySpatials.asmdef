@@ -3,12 +3,10 @@
     "rootNamespace": "vz777.PolySpatials",
     "references": [
         "Unity.InputSystem",
-        "Unity.Mathematics",
         "VContainer",
         "vz777.Events",
         "vz777.Foundation",
-        "vz777.VContainer",
-        "DOTween.Modules"
+        "vz777.VContainer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
