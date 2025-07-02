@@ -9,7 +9,7 @@
   "licensesUrl": "https://github.com/adrian-yip-v777/unity-package-polyspatials/blob/0.4.1/LICENSE",
   "dependencies": {
     "jp.hadashikick.vcontainer": "1.16.8",
-    "com.vz777.foundation": "0.2.2-fork.5",
+    "com.vz777.foundation": "0.3.0",
     "com.vz777.events": "0.3.2"
   },
   "keywords": [
@@ -22,5 +22,12 @@
     "name": "Visionaries 777",
     "email": "adrian@visionaries777.com",
     "url": "https://www.vz777.com"
-  }
+  },
+  "samples": [
+    {
+      "displaName": "Spatial Buttons",
+      "description": "Some common scripts for Spatial Buttons (A 3D mesh button)",
+      "path": "Samples~/SpatialButtons"
+    }
+  ]
 }
