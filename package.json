@@ -11,7 +11,7 @@
     "com.unity.inputsystem": "1.13.1",
     "jp.hadashikick.vcontainer": "1.16.8",
     "com.vz777.foundation": "0.3.0",
-    "com.vz777.events": "0.3.2"
+    "com.vz777.events": "0.3.2",
     "com.vz777.vcontainer-extensions": "0.2.1"
   },
   "keywords": [
@@ -27,7 +27,7 @@
   },
   "samples": [
     {
-      "displaName": "Spatial Buttons",
+      "displayName": "Spatial Buttons",
       "description": "Some common scripts for Spatial Buttons (A 3D mesh button)",
       "path": "Samples~/SpatialButtons"
     }
