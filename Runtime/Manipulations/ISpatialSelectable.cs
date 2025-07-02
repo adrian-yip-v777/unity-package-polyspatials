@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace vz777.PolySpatials.Manipulations
 {
     /// <summary>
