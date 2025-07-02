@@ -1,4 +1,7 @@
 # Changelog
+## 0.5.0
+- Moved spatial buttons to sample folder instead of being there in Runtime folder
+
 ## 0.4.1
 - Fixed scaling with two pinches being incorrectly calculated because the wrong initial distance
 

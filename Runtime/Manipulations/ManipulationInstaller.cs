@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 using vz777.PolySpatials.Manipulations.Strategies;
