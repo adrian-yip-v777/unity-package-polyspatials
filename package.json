@@ -38,6 +38,11 @@
       "path": "Samples~/ManipulationDemo"
     },
     {
+      "displayName": "Manipulation Group Demo",
+      "description": "Demonstrate how manipulation works on a group of objects.",
+      "path": "Samples~/ManipulationGroupDemo"
+    },
+    {
       "displayName": "Spatial Buttons",
       "description": "Some common scripts for Spatial Buttons (A 3D mesh button)",
       "path": "Samples~/SpatialButtons"
