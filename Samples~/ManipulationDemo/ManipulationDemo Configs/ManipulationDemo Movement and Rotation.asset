@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cad14bf97fa4b968cd73bdfde57469a, type: 3}
   m_Name: ManipulationDemo Movement and Rotation
   m_EditorClassIdentifier: 
-  manipulationMode: 0
+  manipulationMode: 1

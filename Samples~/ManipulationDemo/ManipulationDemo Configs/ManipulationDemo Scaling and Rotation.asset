@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 526f072b8bee46c490750dea8b82cb2b, type: 3}
   m_Name: ManipulationDemo Scaling and Rotation
   m_EditorClassIdentifier: 
-  manipulationMode: 0
+  manipulationMode: 1
   SmallestScaleValue: 0.1
   LargestScaleValue: 2
