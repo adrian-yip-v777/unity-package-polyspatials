@@ -27,6 +27,11 @@
   },
   "samples": [
     {
+      "displayName": "Basic Demo",
+      "description": "Demonstrate how pointer selection works with VContainer and EventBus.",
+      "path": "Samples~/BasicDemo"
+    },
+    {
       "displayName": "Spatial Buttons",
       "description": "Some common scripts for Spatial Buttons (A 3D mesh button)",
       "path": "Samples~/SpatialButtons"
