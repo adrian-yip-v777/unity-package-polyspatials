@@ -1,4 +1,7 @@
 # Changelog
+## 0.5.1
+- Added various demos (basic, manipulation, and manipulation group)
+
 ## 0.5.0
 - Moved spatial buttons to sample folder instead of being there in Runtime folder
 
